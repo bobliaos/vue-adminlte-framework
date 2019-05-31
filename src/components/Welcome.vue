@@ -14,9 +14,7 @@ export default {
     }
   },
   created(){
-    $.get(CONFIG.host + CONFIG.path + "query",(value)=>{
-      console.log("jQuery version:",$.fn.jquery);
-    });
+    this.$store.state.API.test();
   }
 }
 </script>

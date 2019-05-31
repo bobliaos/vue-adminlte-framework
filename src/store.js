@@ -1,11 +1,13 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import Api from './api.js'
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
         msg: "Welcome from vuex",
+        API: Api,
     },
     getter: {
         doneTodos: (state, getters) => {
