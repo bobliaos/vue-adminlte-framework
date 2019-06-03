@@ -124,7 +124,7 @@
                 <!-- Menu Footer-->
                 <li class="user-footer">
                   <div class="pull-right">
-                    <a href="#" class="btn btn-default btn-flat">{{ text.log_out }}</a>
+                    <router-link to="/login" class="btn btn-default btn-flat">{{ text.log_out }}</router-link>
                   </div>
                 </li>
               </ul>
@@ -211,7 +211,7 @@
       <!-- Default to the left -->
       <strong>
         Copyright &copy; 2016
-        <a href="#">ABK CO,LTD.</a>.
+        <a href="http://tinypel.com">Tinypel.com</a>.
       </strong> All rights reserved.
     </footer>
   </div>
@@ -231,9 +231,9 @@ export default {
         { name: "繁体中文", icon: "hk" },
         { name: "English", icon: "en" }
       ],
-      text:{
-        log_out:"退出",
-        view_all:"查看所有",
+      text: {
+        log_out: "退出",
+        view_all: "查看所有"
       },
       user: {
         name: "Bob",
@@ -243,7 +243,7 @@ export default {
       menus: [
         {
           name: "Link1",
-          active: true,
+          active: false,
           icon: "fa-link",
           link: "/home/welcome",
           sub_menus: []
@@ -259,7 +259,7 @@ export default {
           name: "MultiLink",
           active: false,
           icon: "fa-link",
-          link: "/home/welcome",
+          link: "",
           sub_menus: [
             {
               name: "Sub Link 1",
@@ -270,7 +270,7 @@ export default {
             },
             {
               name: "Sub Link 1",
-              active: true,
+              active: false,
               icon: "fa-circle",
               link: "/home/another",
               sub_menus: []
@@ -284,11 +284,46 @@ export default {
       }
     };
   },
-  created() {
+  methods:{
+    updateMenu(path){
+      this.menus.forEach(menu => {
+        menu.active = menu.link == path;
+        menu.sub_menus.forEach(sub_menu => {
+          sub_menu.active = sub_menu.link == path;
+          if(sub_menu.active) menu.active = sub_menu.active;
+        });
+      });
+    },
+  },
+  watch: {
+    $route(to, from) {
+      let path = to.path;
+      this.updateMenu(path);
+    }
+  },
+  mounted() {
+    //更新 adminlte 布局和插件
+    window.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new Event('load'));
+    
+    //更新菜单
+    this.updateMenu(this.$route.path);
+
     this.$store.state.API.test();
   }
 };
 </script>
 
 <style scoped>
+.country-flag {
+  height: 18px;
+}
+.language-select-item {
+  display: flex;
+  align-items: center;
+}
+.language-select-item img {
+  height: 24px;
+  margin-right: 8px;
+}
 </style>
