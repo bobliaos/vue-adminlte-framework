@@ -20,22 +20,36 @@
             </div>-->
             <!-- /.login-logo -->
             <div class="login-box-body">
-              <p class="login-box-msg">请登陆</p>
+              <h4 class="login-box-msg">请登陆</h4>
 
               <!-- <form action="#" method="post"> -->
               <div class="form-group has-feedback">
-                <input type="phone" class="form-control" placeholder="请输入手机号码或邮箱地址">
+                <input
+                  type="phone"
+                  class="form-control"
+                  v-model="form_data.phone"
+                  placeholder="请输入手机号码或邮箱地址"
+                >
                 <span class="glyphicon glyphicon-phone form-control-feedback"></span>
               </div>
               <div class="form-group has-feedback">
-                <input type="password" class="form-control" placeholder="请输入密码">
+                <input
+                  type="password"
+                  class="form-control"
+                  v-model="form_data.psw"
+                  placeholder="请输入密码"
+                >
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
               </div>
               <div class="row">
                 <div class="col-xs-8">
                   <div class="checkbox icheck">
                     <label>
-                      <input type="checkbox" style="margin-left:0px;">&nbsp;&nbsp;&nbsp;&nbsp;记住我
+                      <input
+                        type="checkbox"
+                        v-model="form_data.remember_checked"
+                        style="margin-left:0px;"
+                      >&nbsp;&nbsp;&nbsp;&nbsp;记住我
                     </label>
                   </div>
                 </div>
@@ -53,7 +67,8 @@
               <hr>
               <div style="padding:0px 0px 20px 0px;">
                 <div class="pull-left">
-                  <a href="#">忘记密码?马上找回</a>
+                  忘记密码?
+                  <router-link to="reset">马上找回</router-link>
                 </div>
                 <div class="pull-right">
                   还没账号?
@@ -64,8 +79,9 @@
           </div>
         </div>
         <div role="tabpanel" class="tab-pane text-center" id="qrcode" style="padding:20px;">
+          <h4 class="login-box-msg">请扫码</h4>
           <div>
-            <img :src="loginQRCodeImg" style="width:300px;height:300px;background:#ddd;"/>
+            <img :src="loginQRCodeImg" style="width:240px;height:240px;background:#ddd;">
             <br>请用微信扫描上面的二维码登录
           </div>
         </div>
@@ -83,42 +99,63 @@ export default {
     return {
       msg: this.$store.state.msg,
       loginQRCodeImg: "",
+      form_data: { phone: "", paw: "" }
     };
   },
   methods: {
     onLoginBtnClick() {
-      Cookies.set("token", "test_token_aoipsz3xk99asdf3asdf21nwq");
-      Cookies.set("user", { name: "test_user", avatar: "test_avatar.png" });
-      this.$router.push("/home");
+      if (!/^1[34578]\d{9}$/.test(this.form_data.phone)) {
+        this.$api.tip("请输入正确的电话号码", "warning");
+        return;
+      }
+      if (
+        !/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/.test(this.form_data.psw)
+      ) {
+        this.$api.tip("密码为6到16位数字和字母混合", "warning");
+        return;
+      }
+
+      this.$api
+        .login(this.form_data)
+        .then(result => {
+          if (result) {
+            Cookies.set("token", "test_token_aoipsz3xk99asdf3asdf21nwq");
+            Cookies.set("user", {
+              name: "test_user",
+              avatar: "test_avatar.png"
+            });
+
+            this.$api.tip("登录成功", "success");
+            this.$router.push("/home");
+          } else {
+            this.$api.tip("登录失败,请检查用户名和密码!", "warning");
+          }
+        })
+        .catch(error => {
+          this.$api.tip("登录失败,请检查用户名和密码!", "error");
+        });
     },
-    generateQRCode(){
+    generateQRCode() {
       let qrCodeURL = "http://www.baidu.com";
-      let QRCode = require('qrcode');
+      let QRCode = require("qrcode");
       QRCode.toDataURL(qrCodeURL)
         .then(url => {
           this.loginQRCodeImg = url;
         })
         .catch(err => {
-          console.error(err)
-        })
-    },
+          console.error(err);
+        });
+    }
   },
   mounted() {
     this.generateQRCode();
-    setTimeout(() => {
-      $("#myTabs a").click(function(e) {
-        console.log(e);
-        e.preventDefault();
-        $(this).tab("show");
-      });
-    }, 0);
   }
 };
 </script>
 
 <style>
 body {
-  background: #eee url(/static/img/bg.e9fd806.jpg) no-repeat 50% 50%;
+  background: #eee url(/static/img/bg3.jpg) no-repeat 50% 0%;
   background-size: cover;
   width: 100%;
   height: 100%;
@@ -141,5 +178,8 @@ body {
   color: #337ab7;
   background-color: #fff;
   border-top-color: #fff;
+}
+.login-box {
+  box-shadow: 0px 2px 2px #00000038;
 }
 </style>

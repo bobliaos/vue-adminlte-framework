@@ -1,13 +1,18 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import Api from './api.js'
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
         msg: "Welcome from vuex",
-        API: Api,
+        msg_error: "...",
+        msg_info: "...",
+        modal_tips_data: {
+            class: "modal-danger",
+            title: "警告",
+            msg: "",
+        },
     },
     getter: {
         doneTodos: (state, getters) => {
@@ -15,14 +20,11 @@ export default new Vuex.Store({
         }
     },
     mutations: {
-        increment(state, payload) {
-            state.count++
+        msg_tips(state, data) {
+            state.modal_tips_data.class = data.class || "modal-primary";
+            state.modal_tips_data.title = data.title || "提示";
+            state.modal_tips_data.msg = data.msg;
         }
     },
-    actions: {
-        addCount(context) {
-            // 可以包含异步操作
-            // context 是一个与 store 实例具有相同方法和属性的 context 对象
-        }
-    }
+    actions: {}
 });

@@ -6,6 +6,7 @@ import Page500 from '@/components/Page500'
 
 import Login from '@/components/Login'
 import Register from '@/components/Register'
+import Reset from '@/components/Reset'
 
 import Home from '@/components/Home'
 import PageWelcome from '@/components/PageWelcome'
@@ -20,6 +21,7 @@ export default new Router({
         { path: '/500', component: Page500 },
         { path: '/login', component: Login },
         { path: '/register', component: Register },
+        { path: '/reset', component: Reset },
         { path: '/', redirect: '/home' },
         {
             path: '/home',
