@@ -136,15 +136,6 @@ export default {
         });
     },
     generateQRCode() {
-      let qrCodeURL = "http://www.baidu.com";
-      let QRCode = require("qrcode");
-      QRCode.toDataURL(qrCodeURL)
-        .then(url => {
-          this.loginQRCodeImg = url;
-        })
-        .catch(err => {
-          console.error(err);
-        });
     }
   },
   mounted() {
